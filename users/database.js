@@ -1,13 +1,11 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://Talif786:talifrgit@cluster0.eaonu.mongodb.net/DealsandCouponsAdmin?retryWrites=true&w=majority',{useNewUrlParser: true, useUnifiedTopology: true} );
+mongoose.connect('mongodb+srv://Talif786:talifrgit@cluster0.eaonu.mongodb.net/DealsandCouponsUsers?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
 
 var conn = mongoose.connection;
 
 conn.on('connected', function() {
     console.log('Database is connected successfully.');
-    console.log("db object points to the database : "+ conn.name);    
-
-
+    console.log("db object points to the database : "+ conn.name);
 });
 conn.on('disconnected',function(){
     console.log('Database is disconnected successfully.');

@@ -1,15 +1,20 @@
+// const { Router } = require('express');
 const express = require('express');
+var userContoller = require('../controllers/insert-user-controller');
 const app = express();
+// var router = express.Router();
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: true})); 
+  
+// Parses the text as json
+app.use(bodyParser.json());
 const PORT = 3000;
     
 app.get('/users', function (req, res) {
     // console.log(req.get('Content-Type')); 
     res.send("Hello World!! Welcome Users!!");
 });
-app.post('/users', function (req, res) {
-    // console.log(req.get('Content-Type')); 
-    res.send("Hello World!! Welcome to add a user!!");
-});
+app.post('/users', userContoller);
 app.put('/users', function (req, res) {
     // console.log(req.get('Content-Type')); 
     res.send("Hello World!! Welcome to update a user!!");

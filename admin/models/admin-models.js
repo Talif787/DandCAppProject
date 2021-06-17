@@ -8,6 +8,7 @@ var adminSchema = new mongoose.Schema({
             mobile_number:Number
         });
 module.exports=mongoose.model('Admin',adminSchema,'admins');
+
         
 // module.exports={
 //      createData:function(inputData, callback){

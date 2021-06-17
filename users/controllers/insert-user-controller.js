@@ -1,25 +1,20 @@
-var adminModel = require('../models/admin-models');
-
+var userModel = require('../models/user-models');
 module.exports = function (req, res){
-    var newAdmin = new adminModel();
-    newAdmin.full_name = req.body.full_name;
-    newAdmin.email_address = req.body.email_address;
-    newAdmin.password = req.body.password;
-    newAdmin.mobile_number = req.body.mobile_number;
+    var newUser = new userModel();
+    newUser.full_name = req.body.full_name;
+    newUser.email_address = req.body.email_address;
+    newUser.password = req.body.password;
+    newUser.mobile_number = req.body.mobile_number;
     
-    newAdmin.save(function(err, data){
+    newUser.save(function(err, data){
         if(err){
             console.log(error);
         }
         else{
-            res.send("Admin Data inserted successfully..");
+            res.send("User Data inserted successfully..");
         }
     });
 }
-
-
-
-
 
 
 // var admin1 = new Admin({ full_name: "Talif Pathan",

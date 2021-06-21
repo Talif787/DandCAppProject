@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const adminsRightsRouter = require('./routes/admin-routes');
+const usersRightsRouter = require('./routes/users-routes');
 // var adminController = require('../controllers/insert-admin-controller');
 // var userController = require('../../users/controllers/insert-user-controller');
 // // var router = express.Router();
@@ -15,7 +15,7 @@ const swaggerOptions = {
       openapi: '3.0.0',
       info: {
         version: "1.0.0",
-        title: "Deals and Coupons Finder App -- Admins Microservice.",
+        title: "Deals and Coupons Finder App -- Users Microservice.",
         description: "This application is built using Node.js.",
         contact: {
           name: "Amazing Web Developer"
@@ -23,7 +23,7 @@ const swaggerOptions = {
     },
         servers: [
             {
-                url: "http://localhost:3002"
+                url: "http://localhost:3000"
             }
             ]
     },
@@ -40,9 +40,15 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(express.urlencoded({extended: true})); 
 app.use(express.json()); 
-const PORT = 3002;
+const PORT = 3000;
 
-app.use('/adminrights',adminsRightsRouter);
+app.get('/checking', function(req, res){
+  res.json({
+     "Tutorial": "Welcome to the Node express JWT Tutorial"
+  });
+});
+
+app.use('/userrights',usersRightsRouter);
 
 app.listen(PORT, function(err){
     if (err) console.log(err);
@@ -52,7 +58,7 @@ app.listen(PORT, function(err){
 
 module.exports = {
   app: app,
-  adminsRightsRouter: adminsRightsRouter
+  usersRightsRouter: usersRightsRouter
 }
 
 

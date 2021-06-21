@@ -12,10 +12,10 @@ module.exports = function (req, res){
     else{
         newUser.save(function(err, created){
             if(err){
-                return res.status(400).json({success: false, error: err});
+                return res.status(500).json({success: false, error: err});
             }
             else{
-                res.status(200).json({success:true, data: created})
+                res.status(201).json({success:true, data: created})
             }
         });
 

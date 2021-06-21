@@ -5,12 +5,15 @@ var adminController = require('../controllers/insert-admin-controller');
 var userController = require('../../users/controllers/insert-user-controller');
 // // var router = express.Router();
 var userModel = require('../../users/models/user-models');
+var adminModel = require('../models/admin-models')
 // var bodyParser = require('body-parser');
 // app.use(bodyParser.urlencoded({extended: true})); 
   
 // // Parses the text as json
 // app.use(bodyParser.json());
 // const PORT = 3002;
+const axios = require('axios');
+const usersservice = 'http://localhost:3000/userrights';
 const express = require('express')
 const router = express.Router();
 
@@ -88,10 +91,38 @@ router.get('/', function (req, res) {
 router.get('/users', function (req, res) {
     // console.log(req.get('Content-Type')); 
     // res.send("Hello World!! Welcome Users!!");
-    userModel.find({}).then(function (users) {
-        res.send(users);
-        });
+    // userModel.find({}).then(function (users) {
+    //     res.send(users);
+    //     });
+    axios.get(usersservice+'/users').then((response) => {
+        res.send(response.data);
+    });
 });
+
+router.get('/user/:id', function (req, res) {
+    // console.log(req.get('Content-Type')); 
+    // res.send("Hello World!! Welcome Users!!");
+    // userModel.find({}).then(function (users) {
+    //     res.send(users);
+    //     });
+    axios.get(usersservice+'/user/'+req.params.id).then((response) => {
+        res.send(response.data);
+    });
+});
+
+router.get('/admin/:id', function (req, res) {
+    adminModel.findById(req.params.id, (err,data) => {
+        if(err){
+            res.status(404).json({success: false, error: err});
+        }
+        else{
+            res.status(200).json(data);
+        }
+    });   
+});
+
+
+
 
 
 router.post('/admin', adminController);
@@ -170,10 +201,10 @@ router.put('/user/:id', function (req, res) {
     userModel.findByIdAndUpdate({_id: req.params.id}, req.body , {new: true}, function(err, result){
 
         if(err){
-            res.send(err)
+            return res.status(404).json({success: false, error: err});
         }
         else{
-            res.send(result)
+            res.status(200).json(result);
         }
 
     })
@@ -210,19 +241,27 @@ router.delete('/user/:id', function (req, res) {
     // res.send("Hello World!! Welcome to delete an admin!!");
     userModel.deleteMany({_id: req.params.id}, function (err, _) {
         if (err) {
-            return console.log(err);
+            return res.status(404).json({success: false, error: err});
         }
         else{
-            res.send(`User's Account deleted with _id: ${req.params.id}`)
+            res.status(200).send(`User's account deleted with _id: ${req.params.id}`);
         }
     });
 });  
 
 
-router.delete('/admin', function (req, res) {
+router.delete('/admin/:id', function (req, res) {
     // console.log(req.get('Content-Type')); 
-    res.send("Hello World!! Welcome to delete an admin!!");
-    console.log(res);
+    // res.send("Hello World!! Welcome to delete an admin!!");
+    // console.log(res);
+    adminModel.findByIdAndDelete(req.params.id, function (err) {
+        if(err){
+            res.status(404).json({success: false, error: err});
+        }
+        else{
+            res.status(200).send(`Admin's account deleted with _id: ${req.params.id}`);
+        }
+      });
 });  
   
   

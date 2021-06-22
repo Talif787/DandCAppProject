@@ -13,9 +13,11 @@ const chaiHttp = require("chai-http")
 const expect = chai.expect
 chai.should();
 chai.use(chaiHttp)
+
 const server = require("../index");
 var app = request.agent(server.app);
 var userModel = require("../../users/models/user-models");
+var adminModel = require("../models/admin-models");
 
 
 describe("GET Request", function () {

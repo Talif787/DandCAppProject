@@ -14,7 +14,67 @@ const mongoose = require('mongoose');
 // // Parses the text as json
 // app.use(bodyParser.json());
 // const PORT = 3000;
+
+/**
+ * @openapi
+ * tags: 
+ *      name: Users
+ *      description: The users managing API.
+ */
+
+/**
+ * @openapi
+ * components:
+ *      schemas:
+ *          User:
+ *              type: object
+ *              required:
+ *                  - full_name
+ *                  - email_address
+ *                  - password
+ *                  - mobile_number
+ *              properties:
+ *                  id:
+ *                      type: string
+ *                      description: The auto_generated id of the user.
+ *                  full_name:
+ *                      type: string
+ *                      description: Name of the user.
+ *                  email_address:
+ *                      type: string
+ *                      description: The Email-ID of the user.
+ *                  password:
+ *                      type: string
+ *                      description: Password of the respective user.
+ *                  mobile_number:
+ *                      type: number
+ *                      description: The 10 digit mobile number of the user.
+ *              example:
+ *                  id: d5fE_asz
+ *                  full_name: Talif Pathan
+ *                  email_address: abc@gmail.com
+ *                  password: abc123$
+ *                  mobile_number: 7890656783
+ */
     
+
+
+/**
+ * @openapi
+ * /adminrights/users:
+ *      get:
+ *          summary: Returns all the users stored in the users collections of the DealsandCouponsUsers Database.
+ *          tags: [Users]  
+ *          responses:
+ *              200:
+ *                  description: The list of the users.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: array
+ *                              items:
+ *                                  $ref: '#/components/schemas/User'
+ */
 router.get('/users', function (req, res) {
     // console.log(req.get('Content-Type')); 
     // res.send("Hello World!! Welcome Users!!");
@@ -23,6 +83,24 @@ router.get('/users', function (req, res) {
         });
 });
 
+
+
+/**
+ * @openapi
+ * /adminrights/users:
+ *      get:
+ *          summary: Returns all the users stored in the users collections of the DealsandCouponsUsers Database.
+ *          tags: [Users]  
+ *          responses:
+ *              200:
+ *                  description: The list of the users.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: array
+ *                              items:
+ *                                  $ref: '#/components/schemas/User'
+ */
 router.get('/user/:id', function (req, res) {
     // console.log(req.get('Content-Type')); 
     // res.send("Hello World!! Welcome Users!!");

@@ -40,6 +40,8 @@ var dealsOrCouponsSchema = new mongoose.Schema({
                 required: true
             },
             category_array:{
+                type: Object,
+                required: true,
                 Fashion: {
                     type: Array,
                 },
@@ -76,12 +78,13 @@ var dealsOrCouponsSchema = new mongoose.Schema({
                 required: true
             },
             start_date:{ 
-                type : Date, 
-                default: Date.now 
+                type : String,
+                required: true
+                
             },
             end_date:{ 
-                    type : Date, 
-                    default: Date.now 
-                }  
+                type : String,
+                required: true
+            }  
         });
 module.exports=mongoose.model('DealsorCoupons',dealsOrCouponsSchema,'dealsorcoupons');

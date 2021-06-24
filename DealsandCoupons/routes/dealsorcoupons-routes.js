@@ -161,6 +161,46 @@ router.get('/dealsorcoupons', function (req, res) {
     });
 });
 
+/**
+ * @openapi
+ * /dealsorcouponsrights/dealorcoupon/{id}:
+ *      get:
+ *          summary: Returns a particular deal/coupon stored in the offers collections of the DealsandCouponsOffers Database.
+ *          tags: [DealsorCoupons]
+ *          parameters:
+ *            - in: path
+ *              name: id
+ *              schema:
+ *                  type: string
+ *              required: true
+ *              description: The offer id.
+ *          responses:
+ *              200:
+ *                  description: A particular deal/coupon.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              example:
+ *                                  _id: d5fE_asz
+ *                                  store_name: Amazon
+ *                                  business_email_address: abc@amazon.com
+ *                                  password: abc123$                             
+ */
+
+router.get('/dealorcoupon/:id', function (req, res) {
+    // console.log(req.get('Content-Type')); 
+    // res.send("Hello World!! Welcome Users!!");
+    dealsOrCouponsModel.findById(req.params.id, (err,data) => {
+        if(err){
+            res.status(404).json({success: false, error: err});
+        }
+        else{
+            res.status(200).json(data);
+        }
+    });
+});
+
 router.get('/code', function (req, res) {
     // console.log(req.get('Content-Type')); 
     // res.send("Hello World!! Welcome Deals and Coupons!!");
@@ -224,7 +264,130 @@ router.get('/lastdealorcoupon', function (req,res){
 });
 
 
+/**
+ * @openapi
+ * /dealsorcouponsrights/adddealorcoupon/:
+ *      post:
+ *          summary: Create a new deal/coupon in the offers collections of the DealsandCouponsOffers Database.
+ *          tags: [DealsorCoupons] 
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                         type: object
+ *                         example:
+ *                              { "store_name": "Amazon",  "business_email_address": "abc@amazon.com", "password": "abc123$" }
+ *          responses:
+ *              '201':
+ *                  description: OK.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              example: 
+ *                                  success: true
+ *                                  data: { "_id": "60d368a899be30066e2a8db3",  "store_name": "Amazon",  "business_email_address": "abc@amazon.com", "password": "abc123$", "__v": 0 }                              
+ */
+
 router.post('/adddealorcoupon',dealsOrCouponsController);
+
+
+
+
+/**
+ * @openapi
+ * /dealsorcouponsrights/updatedorc/{id}:
+ *      put:
+ *          summary: Update an deal/coupon by its id in the offers collections of the DealsandCouponsOffers Database.
+ *          tags: [DealsorCoupons] 
+ *          parameters:
+ *            - in: path
+ *              name: id
+ *              schema:
+ *                  type: string
+ *              required: true
+ *              description: The deal/couponid.
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          example: {"business_email_address": "abx@amazon.com", "password": "abc123$%"}
+ *          responses:
+ *              '200':
+ *                  description: OK.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              example: 
+ *                                  id: d5fE_asz
+ *                                  store_name: Amazon
+ *                                  business_email_address: abx@amazon.com
+ *                                  password: abc123$%
+ *              '404':
+ *                  description: The deal/coupon was not found.
+ *              '500':
+ *                  description: There was some server error.
+ */
+
+router.put('/updatedorc/:id', function (req, res) {
+    // console.log(req.get('Content-Type')); 
+   //  res.send("Hello World!! Welcome to update a user!!");
+   dealsOrCouponsModel.findByIdAndUpdate({_id: req.params.id}, req.body , {new: true}, function(err, result){
+
+      if(err){
+          return res.status(404).json({success: false, error: err});
+      }
+      else{
+          res.status(200).json(result);
+      }
+
+  })
+});
+
+
+
+
+/**
+ * @openapi
+ * /dealsorcouponsrights/deletedorc/{id}:
+ *      delete:
+ *          summary: Remove the deal/coupon by its id.
+ *          tags: [DealsorCoupons] 
+ *          parameters:
+ *            - in: path
+ *              name: id
+ *              schema:
+ *                  type: string
+ *              required: true
+ *              description: The deal/coupon id.
+ *          responses:
+ *              '200':
+ *                  description: The deal/coupon will be deleted.
+ *                  content:
+ *                      text/plain:
+ *                          schema:
+ *                              Deal/Coupon deleted with _id: 123edfz
+ *              '404':
+ *                  description: The merchant was not found.
+ */
+
+router.delete('/deletedorc/:id', function (req, res) {
+    // console.log(req.get('Content-Type')); 
+   //  res.send("Hello World!! Welcome to delete a user!!");
+   dealsOrCouponsModel.deleteMany({_id: req.params.id}, function (err, _) {
+      if (err) {
+          return res.status(404).json({success: false, error: err});
+      }
+      else{
+          res.status(200).send(`Deal/Coupon deleted with _id: ${req.params.id}`);
+      }
+  });
+});  
+
 
 
 

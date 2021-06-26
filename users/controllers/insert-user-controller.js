@@ -5,11 +5,13 @@ module.exports = function (req, res){
     newUser.email_address = req.body.email_address;
     newUser.password = req.body.password;
     newUser.mobile_number = req.body.mobile_number;
-
+    console.log(Object.keys(req.body).length);
     if(Object.keys(req.body).length === 0 ){
         res.send("There's no data to insert..")
     }
     else{
+
+    
         newUser.save(function(err, created){
             if(err){
                 return res.status(500).json({success: false, error: err});
@@ -18,7 +20,6 @@ module.exports = function (req, res){
                 res.status(201).json({success:true, data: created})
             }
         });
-
     }
 
 }

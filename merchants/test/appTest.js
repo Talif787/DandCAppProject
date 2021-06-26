@@ -16,13 +16,13 @@ chai.use(chaiHttp)
 chai.should();
 const server = require("../index");
 var app = request.agent(server.app);
-var userModel = require("../models/user-models");
+var merchantModel = require("../models/merchant-models");
 
 
 describe("GET Request", function () {
-    describe("Getting all the users from the users collection of the DealsandCouponsUsers Database.",function(){
-    it("A successful get request should return status code equal to 200 and all the users.", (done) => {
-      chai.request(server.app).get("/userrights/users").end((err, res)=> {
+    describe("Getting all the merchants from the merchants collection of the DealsandCouponsMerchants Database.",function(){
+    it("A successful get request should return status code equal to 200 and all the merchants.", (done) => {
+      chai.request(server.app).get("/merchantrights/merchants").end((err, res)=> {
           if (err) done(err);
           expect(res).to.have.status(200);
           expect(res).to.be.an('object');
@@ -30,8 +30,8 @@ describe("GET Request", function () {
           done();   
             });
         });
-        it("Should not return any user.", (done) => {
-            chai.request(server.app).get("/userrights/user").end((err, res)=> {
+        it("Should not return any merchant.", (done) => {
+            chai.request(server.app).get("/merchantrights/merchant").end((err, res)=> {
                 if (err) done(err);
                 expect(res).to.have.status(404);
                 expect(res).to.be.an('object');
@@ -43,10 +43,10 @@ describe("GET Request", function () {
 
 
 describe("GET Request By _id", function () {
-    describe("Getting a particular user from the users collection of the DealsandCouponsUsers Database.",function(){
-    it("A successful get request should return status code equal to 200 and all the particular user.", (done) => {
-        const id = "60ce36ae09266c0fbe91d210";
-        chai.request(server.app).get("/userrights/user/"+id).end((err, res)=> {
+    describe("Getting a particular merchant from the merchants collection of the DealsandCouponsMerchants Database.",function(){
+    it("A successful get request should return status code equal to 200 and all the particular merchant.", (done) => {
+        const id = "60d4d08147c3591bf1147c73";
+        chai.request(server.app).get("/merchantrights/merchant/"+id).end((err, res)=> {
           if (err) done(err);
           expect(res).to.have.status(200);
           expect(res).to.be.an('object');
@@ -54,9 +54,9 @@ describe("GET Request By _id", function () {
           done();   
             });
         });
-        it("Should not return any user.", (done) => {
+        it("Should not return any merchant.", (done) => {
             const id = "123";
-            chai.request(server.app).get("/userrights/user/"+id).end((err, res)=> {
+            chai.request(server.app).get("/merchantrights/merchant/"+id).end((err, res)=> {
                 if (err) done(err);
                 expect(res).to.have.status(404);
                 expect(res).to.be.an('object');
@@ -67,58 +67,53 @@ describe("GET Request By _id", function () {
 });
 
 describe("POST Request.", function(){
-    describe("Adding a new user into the users collection of the DealsandCouponsUsers Database.",function(){
+    describe("Adding a new merchant into the merchants collection of the DealsandCouponsMerchants Database.",function(){
         it("Successful insertion should return status code equal to 200.", async function(){
             let res = await chai
         	.request(server.app)
-        	.post('/userrights/adduser').send({
-                full_name: "Swaroop Lute Testing...",
-                email_address: "swrp123@gmail.com",
-                password: "swp123$%",
-                mobile_number: 9876756765
+        	.post('/merchantrights/addmerchant').send({
+                store_name: "Merchant Testing...",
+                business_email_address: "abc@merchant.com",
+                password: "abc#$%"
     })
 
     expect(res.status).to.equal(201);
     res.body.should.be.a('object');
     res.body.data.should.have.property('_id');
-    res.body.data.should.have.property('full_name').eq("Swaroop Lute Testing...");
-    res.body.data.should.have.property('email_address').eq("swrp123@gmail.com");
-    res.body.data.should.have.property('password').eq("swp123$%");
-    res.body.data.should.have.property('mobile_number').eq(9876756765);
+    res.body.data.should.have.property('store_name').eq("Merchant Testing...");
+    res.body.data.should.have.property('business_email_address').eq("abc@merchant.com");
+    res.body.data.should.have.property('password');
      });
      afterEach(async () => {
-    	await userModel.deleteOne({full_name: "Swaroop Lute Testing..."})
+    	await merchantModel.deleteOne({store_name: "Merchant Testing..."})
 	    });
     });
 });
 
 describe("PUT Request.", function(){
-    describe("Updating a user in the users collection of the DealsandCouponsUsers Database.",function(){
-        it("Successful updation should return status code equal to 200 and the updated user.", async function(){
-            const id = "60ce36ae09266c0fbe91d210";
+    describe("Updating a merchant in the merchants collection of the DealsandCouponsMerchants Database.",function(){
+        it("Successful updation should return status code equal to 200 and the updated merchant.", async function(){
+            const id = "60d4d08147c3591bf1147c73";
             let res = await chai
         	.request(server.app)
-        	.put('/userrights/updateuser/' + id).send({
-                full_name: "Swaroop Lute Updateuserms..",
-                password: "swp123$%@@hh"
+        	.put('/merchantrights/updatemerchant/' + id).send({
+                password: "abx123#"
     })
 
     expect(res.status).to.equal(200);
     expect(res).to.be.an('object');
     res.body.should.be.a('object');
     res.body.should.have.property('_id');
-    res.body.should.have.property('full_name').eq("Swaroop Lute Updateuserms..");
-    res.body.should.have.property('email_address').eq("swrp123@gmail.com");
-    res.body.should.have.property('password').eq("swp123$%@@hh");
-    res.body.should.have.property('mobile_number').eq(9876756765);
+    res.body.should.have.property('store_name').eq("Zaful");
+    res.body.should.have.property('business_email_address').eq("abc@zaful.com");
+    res.body.should.have.property('password');
      });
      it("If the id doesn't exists.", async function(){
         const id = "567";
         let res = await chai
         .request(server.app)
-        .put('/userrights/updateuser/' + id).send({
-            full_name: "Swaroop Lute Update1...",
-            password: "swp123$%2333"
+        .put('/merchantrights/updatemerchant/' + id).send({
+            password: "abx123#"
 });
 
     expect(res.status).to.equal(404);
@@ -131,12 +126,12 @@ describe("PUT Request.", function(){
 
 
 describe("DELETE Request.", function(){
-    describe("Deleting a user in the users collection of the DealsandCouponsUsers Database.",function(){
-        it("Successful deletion should delete a user and return status code equal to 200.", async function(){
-            const id = "60d37ec762655a123ea8b132";
+    describe("Deleting a merchant in the merchants collection of the DealsandCouponsMerchants Database.",function(){
+        it("Successful deletion should delete a merchant and return status code equal to 200.", async function(){
+            const id = "60d4d7a57534f31f28bb66ef";
             let res = await chai
         	.request(server.app)
-        	.delete('/userrights/deleteuser/' + id)
+        	.delete('/merchantrights/deletemerchant/' + id)
 
     expect(res.status).to.equal(200);
     expect(res).to.be.an('object');
@@ -146,7 +141,7 @@ describe("DELETE Request.", function(){
         const id = "567";
         let res = await chai
         .request(server.app)
-        .delete('/userrights/deleteuser/' + id)
+        .delete('/merchantrights/deletemerchant/' + id)
 
     expect(res.status).to.equal(404);
     expect(res).to.be.an('object');

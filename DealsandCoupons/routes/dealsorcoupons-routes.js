@@ -4,6 +4,14 @@ const router = express.Router();
 const dealsOrCouponsModel = require('../models/dealsorcoupons-models');
 
 
+
+// router.get('/hashtags', (req, res) => {
+//     api.get(req.path).then(resp => {
+//       res.send(resp.data)
+//     })
+//   })
+
+
 /**
  * @openapi
  * tags: 
@@ -235,7 +243,7 @@ router.get('/deal/:id', function (req, res) {
     // userModel.find({}).then(function (users) {
     //     res.send(users);
     //     });
-    dealsOrCouponsModel.findById({
+    dealsOrCouponsModel.find({
         $and: [{_id: req.params.id, type: "Deal"}]
       }, null, (err,data) => {
         if(err){

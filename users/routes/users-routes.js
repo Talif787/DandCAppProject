@@ -34,7 +34,7 @@ const mongoose = require('mongoose');
  *                  - password
  *                  - mobile_number
  *              properties:
- *                  id:
+ *                  _id:
  *                      type: string
  *                      description: The auto_generated id of the user.
  *                  full_name:
@@ -61,7 +61,7 @@ const mongoose = require('mongoose');
 
 /**
  * @openapi
- * /adminrights/users:
+ * /userrights/users:
  *      get:
  *          summary: Returns all the users stored in the users collections of the DealsandCouponsUsers Database.
  *          tags: [Users]  
@@ -85,22 +85,37 @@ router.get('/users', function (req, res) {
 
 
 
+
 /**
  * @openapi
- * /adminrights/users:
+ * /userrights/user/{id}:
  *      get:
- *          summary: Returns all the users stored in the users collections of the DealsandCouponsUsers Database.
- *          tags: [Users]  
+ *          summary: Returns a particular user stored in the users collections of the DealsandCouponsUsers Database.
+ *          tags: [Users]
+ *          parameters:
+ *            - in: path
+ *              name: id
+ *              schema:
+ *                  type: string
+ *              required: true
+ *              description: The user id.
  *          responses:
  *              200:
- *                  description: The list of the users.
+ *                  description: A particular user.
  *                  content:
  *                      application/json:
  *                          schema:
- *                              type: array
- *                              items:
- *                                  $ref: '#/components/schemas/User'
+ *                              type: object
+ *                              example:
+ *                                  _id: d5fE_asz
+ *                                  full_name: Talif Pathan
+ *                                  email_address: abc@gmail.com
+ *                                  password: abc123$
+ *                                  mobile_number: 7890656783
  */
+
+
+
 router.get('/user/:id', function (req, res) {
     // console.log(req.get('Content-Type')); 
     // res.send("Hello World!! Welcome Users!!");
@@ -114,7 +129,37 @@ router.get('/user/:id', function (req, res) {
     });
 });
 
-router.post('/users', userContoller);
+
+
+/**
+ * @openapi
+ * /userrights/adduser:
+ *      post:
+ *          summary: Create a new user in the users collections of the DealsandCouponsUsers Database.
+ *          tags: [Users] 
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                         type: object
+ *                         example:
+ *                              {"full_name": "Talif Pathan",  "email_address": "abc@gmail.com", "password": "abc123$", "mobile_number": 7890656783}
+ *          responses:
+ *              '201':
+ *                  description: OK.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              example: 
+ *                                  success: true
+ *                                  data: { "_id": "60d368a899be30066e2a8db3",  "full_name": "Talif Pathan",  "email_address": "abc@gmail.com", "password": "abc123$", "mobile_number": 7890656783, "__v": 0 }                              
+ */
+
+
+
+router.post('/adduser', userContoller);
 
 
 router.post('/api/posts', verifyToken, (req, res) => {  
@@ -214,13 +259,98 @@ router.post('/signup', function(req, res) {
        });
     });
  });
-router.put('/users', function (req, res) {
+
+
+/**
+ * @openapi
+ * /userrights/updateuser/{id}:
+ *      put:
+ *          summary: Update a user by its id in the users collections of the DealsandCouponsUsers Database.
+ *          tags: [Users] 
+ *          parameters:
+ *            - in: path
+ *              name: id
+ *              schema:
+ *                  type: string
+ *              required: true
+ *              description: The user id.
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          example: {"email_address": "abx@gmail.com", "password": "abc123$%"}
+ *          responses:
+ *              '200':
+ *                  description: OK.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              example: 
+ *                                  id: d5fE_asz
+ *                                  full_name: Amit Mahadik
+ *                                  email_address: abx@gmail.com
+ *                                  password: abc123$%
+ *                                  mobile_number: 7890656783
+ *              '404':
+ *                  description: The user was not found.
+ *              '500':
+ *                  description: There was some server error.
+ */
+
+router.put('/updateuser/:id', function (req, res) {
     // console.log(req.get('Content-Type')); 
-    res.send("Hello World!! Welcome to update a user!!");
+   //  res.send("Hello World!! Welcome to update a user!!");
+   userModel.findByIdAndUpdate({_id: req.params.id}, req.body , {new: true}, function(err, result){
+
+      if(err){
+          return res.status(404).json({success: false, error: err});
+      }
+      else{
+          res.status(200).json(result);
+      }
+
+  })
 });
-router.delete('/users', function (req, res) {
+
+
+
+/**
+ * @openapi
+ * /userrights/deleteuser/{id}:
+ *      delete:
+ *          summary: Remove the user by its id.
+ *          tags: [Users] 
+ *          parameters:
+ *            - in: path
+ *              name: id
+ *              schema:
+ *                  type: string
+ *              required: true
+ *              description: The user id.
+ *          responses:
+ *              '200':
+ *                  description: The user was deleted.
+ *                  content:
+ *                      text/plain:
+ *                          schema:
+ *                              User's Account deleted with _id: 123edfz
+ *              '404':
+ *                  description: The user was not found.
+ */
+router.delete('/deleteuser/:id', function (req, res) {
     // console.log(req.get('Content-Type')); 
-    res.send("Hello World!! Welcome to delete a user!!");
+   //  res.send("Hello World!! Welcome to delete a user!!");
+   userModel.deleteMany({_id: req.params.id}, function (err, _) {
+      if (err) {
+          return res.status(404).json({success: false, error: err});
+      }
+      else{
+          res.status(200).send(`User's account deleted with _id: ${req.params.id}`);
+      }
+  });
 });  
 
 

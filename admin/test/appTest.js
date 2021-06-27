@@ -59,7 +59,7 @@ describe("POST Request.", function(){
     res.body.data.should.have.property('_id');
     res.body.data.should.have.property('full_name').eq("Admin Testing...");
     res.body.data.should.have.property('email_address').eq("admin123@gmail.com");
-    res.body.data.should.have.property('password').eq("admin");
+    // res.body.data.should.have.property('password').eq("admin");
     res.body.data.should.have.property('mobile_number').eq(9876755555);
      });
      afterEach(async () => {
@@ -87,7 +87,7 @@ describe("PUT Request.", function(){
     res.body.should.have.property('_id');
     res.body.should.have.property('full_name').eq("Talif Pathan Update1..");
     res.body.should.have.property('email_address').eq("talifpathan13@gmail.com");
-    res.body.should.have.property('password').eq("tp786");
+    // res.body.should.have.property('password').eq("tp786");
     res.body.should.have.property('mobile_number').eq(7678089559);
      });
      it("If the id doesn't exists.", async function(){

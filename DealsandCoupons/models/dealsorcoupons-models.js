@@ -1,5 +1,6 @@
 var mongoose=require('mongoose');
 var db = require('../database');
+mongoose.set('useCreateIndex', true);
 // create an schema
 var dealsOrCouponsSchema = new mongoose.Schema({
 

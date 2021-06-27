@@ -76,7 +76,7 @@ const mongoose = require('mongoose');
  *                                  $ref: '#/components/schemas/User'
  */
 router.get('/users', function (req, res) {
-    // console.log(req.get('Content-Type')); 
+    // console.log(req.get('Content-Type'));        //http://localhost:3000/userrights/users
     // res.send("Hello World!! Welcome Users!!");
     userModel.find({}).then(function (users) {
         res.send(users);
@@ -196,31 +196,27 @@ function verifyToken(req, res, next) {
   
   }
 router.post('/signup', function(req, res) {
-    bcrypt.hash(req.body.password, 10, function(err, hash){
-       if(err) {
-          return res.status(500).json({
-             error: err
-          });
-       }
-       else {
+   //  bcrypt.hash(req.body.password, 10, function(err, hash){
+   //     if(err) {
+   //        return res.status(500).json({
+   //           error: err
+   //        });
+   //     }
+   //     else {
           const user = new userModel({
              full_name: req.body.full_name,
              email_address: req.body.email_address,
-             password: hash,
+             password: req.body.password,
              mobile_number: req.body.mobile_number      
           });
-          user.save().then(function(result) {
-             console.log(result);
-             res.status(200).json({
-                success: 'New user has been created..'
-             });
-          }).catch(error => {
-             res.status(500).json({
-                error: err
-             });
-          });
-       }
-    });
+          user.save(function(err, created){
+            if(err){
+                return res.status(500).json({success: false, error: err});
+            }
+            else{
+                res.status(201).json({success:"New user has been created.", data: created})
+            }
+        });
  });
 
 
@@ -303,6 +299,43 @@ router.post('/signup', function(req, res) {
 router.put('/updateuser/:id', function (req, res) {
     // console.log(req.get('Content-Type')); 
    //  res.send("Hello World!! Welcome to update a user!!");
+   // userModel.findById(req.params.id, function(err, doc) {
+   //    if (err) return false;
+   //    doc = req.body;
+   //    console.log(doc);
+   //    doc.save(function(err, created){
+   //       if(err){
+   //           return res.status(500).json({success: false, error: err});
+   //       }
+   //       else{
+   //           res.status(201).json({success:true, data: created})
+   //       }
+   //   });
+   //  });
+   var doc = req.body
+   if(req.body.password){
+      bcrypt.hash(req.body.password, 10, function(err, hash){
+         if(err) {
+            return res.status(500).json({
+               error: err
+            });
+         }
+         else{
+            doc.password = hash;
+            userModel.findByIdAndUpdate({_id: req.params.id}, doc , {new: true}, function(err, result){
+
+               if(err){
+                   return res.status(404).json({success: false, error: err});
+               }
+               else{
+                   res.status(200).json(result);
+               }
+
+         })
+   }
+})
+}
+else{
    userModel.findByIdAndUpdate({_id: req.params.id}, req.body , {new: true}, function(err, result){
 
       if(err){
@@ -312,7 +345,10 @@ router.put('/updateuser/:id', function (req, res) {
           res.status(200).json(result);
       }
 
-  })
+})
+
+}
+  
 });
 
 

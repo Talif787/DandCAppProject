@@ -190,40 +190,38 @@ function verifyToken(req, res, next) {
   
   }
 router.post('/signup', function(req, res) {
-    bcrypt.hash(req.body.password, 10, function(err, hash){
-       if(err) {
-          return res.status(500).json({
-             error: err
+   //  bcrypt.hash(req.body.password, 10, function(err, hash){
+   //     if(err) {
+   //        return res.status(500).json({
+   //           error: err
+   //        });
+   //     }
+   //     else {
+          const merchant = new merchantModel({
+             store_name: req.body.store_name,
+             business_email_address: req.body.business_email_address,
+             password: req.body.password     
           });
-       }
-       else {
-          const user = new userModel({
-             full_name: req.body.full_name,
-             email_address: req.body.email_address,
-             password: hash,
-             mobile_number: req.body.mobile_number      
-          });
-          user.save().then(function(result) {
-             console.log(result);
-             res.status(200).json({
-                success: 'New user has been created..'
-             });
-          }).catch(error => {
-             res.status(500).json({
-                error: err
-             });
-          });
-       }
-    });
- });
+         
+        merchant.save(function(err, created){
+         if(err){
+             return res.status(500).json({success: false, error: err});
+         }
+         else{
+             res.status(201).json({success:"New merchant has been created.", data: created})
+         }
+     });
+       })
 
 
  router.post('/signin', function(req, res){
 
-    userModel.findOne({email_address: req.body.email_address})
+    merchantModel.findOne({business_email_address: req.body.business_email_address})
     .exec()
     .then(function(user) {
        bcrypt.compare(req.body.password, user.password, function(err, result){
+         //  console.log(req.body.password);
+         //  console.log(result);
           if(err) {
              return res.status(401).json({
                 failed: 'Unauthorized Access'
@@ -231,7 +229,7 @@ router.post('/signup', function(req, res) {
           }
           if(result) {
             const JWTToken = jwt.sign({
-            email_address: user.email_address,
+            business_email_address: user.business_email_address,
           },
           'secretkey',
            {
@@ -296,6 +294,41 @@ router.post('/signup', function(req, res) {
 router.put('/updatemerchant/:id', function (req, res) {
     // console.log(req.get('Content-Type')); 
    //  res.send("Hello World!! Welcome to update a user!!");
+//    merchantModel.findByIdAndUpdate({_id: req.params.id}, req.body , {new: true}, function(err, result){
+
+//       if(err){
+//           return res.status(404).json({success: false, error: err});
+//       }
+//       else{
+//           res.status(200).json(result);
+//       }
+
+//   })
+
+var doc = req.body
+   if(req.body.password){
+      bcrypt.hash(req.body.password, 10, function(err, hash){
+         if(err) {
+            return res.status(500).json({
+               error: err
+            });
+         }
+         else{
+            doc.password = hash;
+            merchantModel.findByIdAndUpdate({_id: req.params.id}, doc , {new: true}, function(err, result){
+
+               if(err){
+                   return res.status(404).json({success: false, error: err});
+               }
+               else{
+                   res.status(200).json(result);
+               }
+
+         })
+   }
+})
+}
+else{
    merchantModel.findByIdAndUpdate({_id: req.params.id}, req.body , {new: true}, function(err, result){
 
       if(err){
@@ -305,7 +338,10 @@ router.put('/updatemerchant/:id', function (req, res) {
           res.status(200).json(result);
       }
 
-  })
+})
+
+}
+  
 });
 
 

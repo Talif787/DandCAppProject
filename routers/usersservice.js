@@ -2,11 +2,11 @@ var express = require('express');
 var router = express.Router()
 const apiAdapter = require('./apiAdapter')
 
-const BASE_URL = 'http://localhost:3004/dealsorcouponsrights'
+const BASE_URL = 'http://localhost:3000/userrights'
 const api = apiAdapter(BASE_URL)
 console.log(api);
 
-router.get('/dealsorcoupons', (req, res) => {
+router.get('/users', (req, res) => {
     console.log(req.path);
     api.get(req.path).then(resp => {
         res.send(resp.data)
@@ -16,7 +16,7 @@ router.get('/dealsorcoupons', (req, res) => {
 })
 
 
-router.get('/dealorcoupon/:id', (req, res) => {
+router.get('/user/:id', (req, res) => {
     console.log(req.path);
     api.get(req.path).then(resp => {
         res.send(resp.data)
@@ -24,34 +24,32 @@ router.get('/dealorcoupon/:id', (req, res) => {
         res.send("Something went wrong. Please try again!!!")
       })
 })
-router.get('/code', (req, res) => {
+// router.get('/code', (req, res) => {
+//     console.log(req.path);
+//     api.get(req.path).then(resp => {
+//         res.send(resp.data)
+//       })
+// })
+router.post('/adduser', (req, res) => {
     console.log(req.path);
-    api.get(req.path).then(resp => {
+    api.post(req.path,req.body).then(resp => {
         res.send(resp.data)
       }).catch((err) => {
         res.send("Something went wrong. Please try again!!!")
       })
 })
-router.get('/deal', (req, res) => {
+router.put('/updateuser/:id', (req, res) => {
     console.log(req.path);
-    api.get(req.path).then(resp => {
-        res.send(resp.data)
-      }).catch((err) => {
-        res.send("Something went wrong. Please try again!!!")
-      })
-})
-router.get('/deal/:id', (req, res) => {
-    console.log(req.path);
-    api.get(req.path).then(resp => {
+    api.put(req.path,req.body).then(resp => {
         res.send(resp.data)
       }).catch((err) => {
         res.send("Something went wrong. Please try again!!!")
       })
 })
 
-router.get('/lastdealorcoupon', (req, res) => {
+router.delete('/deleteuser/:id', (req, res) => {
     console.log(req.path);
-    api.get(req.path).then(resp => {
+    api.delete(req.path).then(resp => {
         res.send(resp.data)
       }).catch((err) => {
         res.send("Something went wrong. Please try again!!!")

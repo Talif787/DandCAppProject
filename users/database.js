@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://Talif786:talifrgit@cluster0.eaonu.mongodb.net/DealsandCouponsUsers?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb+srv://Talif786:talifrgit@cluster0.eaonu.mongodb.net/DealsandCouponsUsers?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false});
 
 var conn = mongoose.connection;
 

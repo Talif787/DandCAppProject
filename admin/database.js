@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://Talif786:talifrgit@cluster0.eaonu.mongodb.net/DealsandCouponsAdmin?retryWrites=true&w=majority',{useNewUrlParser: true, useUnifiedTopology: true} );
-
+mongoose.connect('mongodb+srv://Talif786:talifrgit@cluster0.eaonu.mongodb.net/DealsandCouponsAdmin?retryWrites=true&w=majority',{useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false} );
+// mongoose.set('useFindAndModify', false);
+// mongoose.set('useCreateIndex', true);
 var conn = mongoose.connection;
 
 conn.on('connected', function() {

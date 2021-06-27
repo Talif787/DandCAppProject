@@ -12,8 +12,11 @@ var adminModel = require('../models/admin-models')
 // // Parses the text as json
 // app.use(bodyParser.json());
 // const PORT = 3002;
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
 const axios = require('axios');
-const usersservice = 'http://localhost:3000/userrights';
+const usersservice = 'http://localhost:3000/userrights'; 
 const express = require('express')
 const router = express.Router();
 
@@ -256,16 +259,42 @@ router.post('/adduser', function (req, res) {
 router.put('/updateadmin/:id', function (req, res) {
     // console.log(req.get('Content-Type')); 
     // res.send("Hello World!! Welcome to update an admin!!");
+    var doc = req.body
+    if(req.body.password){
+       bcrypt.hash(req.body.password, 10, function(err, hash){
+          if(err) {
+             return res.status(500).json({
+                error: err
+             });
+          }
+          else{
+             doc.password = hash;
+             adminModel.findByIdAndUpdate({_id: req.params.id}, doc , {new: true}, function(err, result){
+ 
+                if(err){
+                    return res.status(404).json({success: false, error: err});
+                }
+                else{
+                    res.status(200).json(result);
+                }
+ 
+          })
+    }
+ })
+ }
+ else{
     adminModel.findByIdAndUpdate({_id: req.params.id}, req.body , {new: true}, function(err, result){
-
-        if(err){
-            return res.status(404).json({success: false, error: err});
-        }
-        else{
-            res.status(200).json(result);
-        }
-  
-    })
+ 
+       if(err){
+           return res.status(404).json({success: false, error: err});
+       }
+       else{
+           res.status(200).json(result);
+       }
+ 
+ })
+ 
+ }
     
 });
 

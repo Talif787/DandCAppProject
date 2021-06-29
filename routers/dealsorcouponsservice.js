@@ -59,6 +59,33 @@ router.get('/lastdealorcoupon', (req, res) => {
 })
 
 
+router.post('/adddealorcoupon', (req, res) => {
+  console.log(req.path);
+  api.post(req.path,req.body).then(resp => {
+      res.send(resp.data)
+    }).catch((err) => {
+      res.send("Something went wrong. Please try again!!!")
+    })
+})
+router.put('/updatedorc/:id', (req, res) => {
+  console.log(req.path);
+  api.put(req.path,req.body).then(resp => {
+      res.send(resp.data)
+    }).catch((err) => {
+      res.send("Something went wrong. Please try again!!!")
+    })
+})
+
+router.delete('/deletedorc/:id', (req, res) => {
+  console.log(req.path);
+  api.delete(req.path).then(resp => {
+      res.send(resp.data)
+    }).catch((err) => {
+      res.send("Something went wrong. Please try again!!!")
+    })
+})
+
+
 
 
 // router.get('/hashtags/:n', (req, res) => {

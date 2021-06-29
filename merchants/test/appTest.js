@@ -45,7 +45,7 @@ describe("GET Request", function () {
 describe("GET Request By _id", function () {
     describe("Getting a particular merchant from the merchants collection of the DealsandCouponsMerchants Database.",function(){
     it("A successful get request should return status code equal to 200 and all the particular merchant.", (done) => {
-        const id = "60d4d08147c3591bf1147c73";
+        const id = "60d9021b9238b980d58f8956";
         chai.request(server.app).get("/merchantrights/merchant/"+id).end((err, res)=> {
           if (err) done(err);
           expect(res).to.have.status(200);
@@ -93,7 +93,7 @@ describe("POST Request.", function(){
 describe("PUT Request.", function(){
     describe("Updating a merchant in the merchants collection of the DealsandCouponsMerchants Database.",function(){
         it("Successful updation should return status code equal to 200 and the updated merchant.", async function(){
-            const id = "60d4d08147c3591bf1147c73";
+            const id = "60d9021b9238b980d58f8956";
             let res = await chai
         	.request(server.app)
         	.put('/merchantrights/updatemerchant/' + id).send({
@@ -104,8 +104,8 @@ describe("PUT Request.", function(){
     expect(res).to.be.an('object');
     res.body.should.be.a('object');
     res.body.should.have.property('_id');
-    res.body.should.have.property('store_name').eq("Zaful");
-    res.body.should.have.property('business_email_address').eq("abc@zaful.com");
+    res.body.should.have.property('store_name').eq("Amazon");
+    res.body.should.have.property('business_email_address').eq("jp@amazon.com");
     res.body.should.have.property('password');
      });
      it("If the id doesn't exists.", async function(){
@@ -128,7 +128,7 @@ describe("PUT Request.", function(){
 describe("DELETE Request.", function(){
     describe("Deleting a merchant in the merchants collection of the DealsandCouponsMerchants Database.",function(){
         it("Successful deletion should delete a merchant and return status code equal to 200.", async function(){
-            const id = "60d4d7a57534f31f28bb66ef";
+            const id = "60d4d7a57534f31f28b";
             let res = await chai
         	.request(server.app)
         	.delete('/merchantrights/deletemerchant/' + id)

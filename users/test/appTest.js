@@ -73,7 +73,7 @@ describe("POST Request.", function(){
         	.request(server.app)
         	.post('/userrights/adduser').send({
                 full_name: "Swaroop Lute Testing...",
-                email_address: "swrp123@gmail.com",
+                email_address: "swrp124@gmail.com",
                 password: "swp123$%",
                 mobile_number: 9876756765
     })
@@ -82,7 +82,7 @@ describe("POST Request.", function(){
     res.body.should.be.a('object');
     res.body.data.should.have.property('_id');
     res.body.data.should.have.property('full_name').eq("Swaroop Lute Testing...");
-    res.body.data.should.have.property('email_address').eq("swrp123@gmail.com");
+    res.body.data.should.have.property('email_address').eq("swrp124@gmail.com");
     // res.body.data.should.have.property('password').eq("swp123$%");
     res.body.data.should.have.property('mobile_number').eq(9876756765);
      });
@@ -133,7 +133,7 @@ describe("PUT Request.", function(){
 describe("DELETE Request.", function(){
     describe("Deleting a user in the users collection of the DealsandCouponsUsers Database.",function(){
         it("Successful deletion should delete a user and return status code equal to 200.", async function(){
-            const id = "60d37ec762655a123ea8b132";
+            const id = "60d37ec762655a123ea8";
             let res = await chai
         	.request(server.app)
         	.delete('/userrights/deleteuser/' + id)

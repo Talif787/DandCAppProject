@@ -48,6 +48,7 @@ app.get('/checking', function(req, res){
   });
 });
 
+
 app.use('/userrights',usersRightsRouter);
 
 app.listen(PORT, function(err){

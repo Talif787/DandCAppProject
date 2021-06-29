@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router()
 const apiAdapter = require('./apiAdapter')
 
+
 const BASE_URL = 'http://localhost:3008/merchantrights'
 const api = apiAdapter(BASE_URL)
 console.log(api);

@@ -8,6 +8,8 @@ const userModel = require('../models/user-models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
+
+
 // var bodyParser = require('body-parser');
 // app.use(bodyParser.urlencoded({extended: true})); 
   
@@ -162,20 +164,68 @@ router.get('/user/:id', function (req, res) {
 router.post('/adduser', userContoller);
 
 
-router.post('/api/posts', verifyToken, (req, res) => {  
-    jwt.verify(req.token, 'secretkey', (err, authData) => {
-      if(err) {
-        res.sendStatus(403);
-      } else {
-        res.json({
-          message: 'Post created...',
-          authData
-        });
-      }
-    });
-  });
+const authenticateJWT = (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
-  // Verify Token
+  if (authHeader) {
+      const token = authHeader.split(' ')[1];
+
+      jwt.verify(token, 'secretkey', (err, authData) => {
+          if (err) {
+              return res.sendStatus(403);
+          }
+
+          res.json({
+                  message: 'Post created...',
+                  authData
+                });
+                next();
+      });
+  } else {
+      res.sendStatus(401);
+  }
+};
+
+router.post('/api/posts', verifyToken, (req, res) => { 
+//   console.log("Hello");
+// verifyToken;
+//   // Verify Token
+// function verifyToken(req, res, next) {
+//     // Get auth header value
+//     const bearerHeader = req.headers['authorization'];
+//     // Check if bearer is undefined
+//     if(typeof bearerHeader !== 'undefined') {
+//       // Split at the space
+//       const bearer = bearerHeader.split(' ');
+//       // Get token from array
+//       const bearerToken = bearer[1];
+//       // Set the token
+//       req.token = bearerToken;
+//       // Next middleware
+//       next();
+//     } else {
+//       // Forbidden
+//       res.send("Killed");
+//     }
+//   }
+  jwt.verify(req.token, 'secretkey', (err, authData) => {
+    if(err) {
+      res.sendStatus(403);
+    } else {
+      res.json({
+        message: 'Post created...',
+        authData
+      });
+    }
+  });
+  // res.send("hello world");
+});
+
+
+
+ 
+   
+//   // Verify Token
 function verifyToken(req, res, next) {
     // Get auth header value
     const bearerHeader = req.headers['authorization'];
@@ -193,7 +243,6 @@ function verifyToken(req, res, next) {
       // Forbidden
       res.sendStatus(403);
     }
-  
   }
 router.post('/signup', function(req, res) {
    //  bcrypt.hash(req.body.password, 10, function(err, hash){
@@ -203,6 +252,8 @@ router.post('/signup', function(req, res) {
    //        });
    //     }
    //     else {
+          var mailer = require('../../Mail/server');
+          mailer(req.body.email_address);
           const user = new userModel({
              full_name: req.body.full_name,
              email_address: req.body.email_address,

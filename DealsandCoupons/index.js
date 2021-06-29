@@ -60,3 +60,7 @@ app.listen(PORT, function(err){
 
 
 
+module.exports = {
+  app: app,
+  dealsorCouponsRouter: dealsorCouponsRouter
+}

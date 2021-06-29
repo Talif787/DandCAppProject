@@ -43,4 +43,4 @@ app.get('*', checkUser);
 app.get('/', (req, res) => res.render('home'));
 app.get('/smoothies', requireAuth, (req, res) => res.render('smoothies'));
 app.use(authRoutes);
-app.listen(4000);
+app.listen(9000);

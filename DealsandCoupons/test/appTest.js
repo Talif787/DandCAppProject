@@ -16,7 +16,7 @@ chai.use(chaiHttp)
 chai.should();
 const server = require("../index");
 var app = request.agent(server.app);
-var userModel = require("../../users/models/user-models");
+// var userModel = require("../../users/models/user-models");
 var dealsandcouponsModel = require("../models/dealsorcoupons-models");
 
 
@@ -47,23 +47,17 @@ describe("POST Request.", function(){
         it("Successful insertion should return status code equal to 200.", async function(){
             let res = await chai
         	.request(server.app)
-        	.post('/dealsorcouponsrights/adddealorcoupon').send({
-                full_name: "Admin Testing...",
-                email_address: "admin123@gmail.com",
-                password: "admin",
-                mobile_number: 9876755555
-    })
+        	.post('/dealsorcouponsrights/adddealorcoupon').send({lmd_id:"633$55",store:"au.zaful.com",offer_text:"Avail 18% Discount on all products",offer_value:"18%",title:"Get Flat 18% OFF",description:"This promotional offer is valid on all products (Products include Clothing, Footwear, Accessories and more)",code:"18FALL",terms_and_conditions:"Testing..",categories:"Fashion,Mens Apparels,Womens Apparels,Footwear,Fashion Accessories",category_array:{Fashion:["Mens Apparels","Womens Apparels","Footwear","Fashion Accessories"]},featured:"No",url:"https://au.zaful.com/",smartLink:"http://linkmydeals.com/smartlink/?account_id=4514&network=&url=https%3A%2F%2Fau.zaful.com%2F",image_url:"https://c.cfjump.com/Avatars/ECED3475-931C-41F1-B3CD-513CD7FDFDCA.png",type:"Code",offer:"Percentage-Off",status:"active",start_date:"2021-01-28",end_date:"2022-01-01"})
 
     expect(res.status).to.equal(201);
-    res.body.should.be.a('object');
+    res.body.data.should.be.a('object');
     res.body.data.should.have.property('_id');
-    res.body.data.should.have.property('full_name').eq("Admin Testing...");
-    res.body.data.should.have.property('email_address').eq("admin123@gmail.com");
-    res.body.data.should.have.property('password').eq("admin");
-    res.body.data.should.have.property('mobile_number').eq(9876755555);
+    res.body.data.should.have.property('lmd_id').eq("633$55");
+    res.body.data.should.have.property('store').eq("au.zaful.com");
+    res.body.data.should.have.property('type').eq("Code");
      });
      afterEach(async () => {
-    	await dealsandcouponsModel.deleteOne({mobile_number: 9876755555}, function(err){
+    	await dealsandcouponsModel.deleteOne({lmd_id: "633$55"}, function(err){
             if (err) return handleError(err);
         })
 	    });
@@ -73,30 +67,28 @@ describe("POST Request.", function(){
 describe("PUT Request.", function(){
     describe("Updating a deal or coupon in the offers collection of the DealsandCouponsOffers Database.",function(){
         it("Successful updation should return status code equal to 200 and the updated deal or coupon.", async function(){
-            const id = "60d25cb6ef01a9e6b4635d77";
+            const id = "60d25cb6ef01a9e6b4635d78";
             let res = await chai
         	.request(server.app)
         	.put('/dealsorcouponsrights/updatedorc/' + id).send({
-                full_name: "Talif Pathan Update1..",
-                password: "tp786"
+               offer_text: "Avail 28% Discount on all products"
     })
 
     expect(res.status).to.equal(200);
     expect(res).to.be.an('object');
     res.body.should.be.a('object');
     res.body.should.have.property('_id');
-    res.body.should.have.property('full_name').eq("Talif Pathan Update1..");
-    res.body.should.have.property('email_address').eq("talifpathan13@gmail.com");
-    res.body.should.have.property('password').eq("tp786");
-    res.body.should.have.property('mobile_number').eq(7678089559);
+    res.body.should.have.property('lmd_id')
+    res.body.should.have.property('store')
+    res.body.should.have.property('type')
+    res.body.should.have.property('offer_text').eq("Avail 28% Discount on all products")
      });
      it("If the id doesn't exists.", async function(){
         const id = "567";
-        let res = await chai
-        .request(server.app)
+        let res = await
+        request(server.app)
         .put('/dealsorcouponsrights/updatedorc/' + id).send({
-            full_name: "Swaroop Lute Update1...",
-            password: "swp123$%2333"
+            offer_text: "Avail 28% Discount on all products"
 });
 
     expect(res.status).to.equal(404);
@@ -111,7 +103,7 @@ describe("PUT Request.", function(){
 describe("DELETE Request.", function(){
     describe("Deleting a deal or coupon from the offers collection of the DealsandCouponsOffers Database.",function(){
         it("Successful deletion should delete a user and return status code equal to 200.", async function(){
-            const id = "60d25cb6ef01a9e6b4635d77";
+            const id = "1234";
             let res = await chai
         	.request(server.app)
         	.delete('/dealsorcouponsrights/deletedorc/' + id)

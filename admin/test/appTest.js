@@ -50,7 +50,7 @@ describe("POST Request.", function(){
         	.post('/adminrights/addadmin').send({
                 full_name: "Admin Testing...",
                 email_address: "admin123@gmail.com",
-                password: "admin",
+                password: "admin1",
                 mobile_number: 9876755555
     })
 
@@ -111,7 +111,7 @@ describe("PUT Request.", function(){
 describe("DELETE Request.", function(){
     describe("Deleting an admin from the admins collection of the DealsandCouponsAdmins Database.",function(){
         it("Successful deletion should delete a user and return status code equal to 200.", async function(){
-            const id = "60d4a652dc078a127db792b7";
+            const id = "60d4a652dc0";
             let res = await chai
         	.request(server.app)
         	.delete('/adminrights/deleteadmin/' + id)

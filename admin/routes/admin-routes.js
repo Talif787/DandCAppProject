@@ -17,6 +17,8 @@ const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const axios = require('axios');
 const usersservice = 'http://localhost:3000/userrights'; 
+const merchantsservice = 'http://localhost:3008/merchantrights'; 
+const dncservice = 'http://localhost:3004/dealsorcouponsrights'; 
 const express = require('express')
 const router = express.Router();
 
@@ -378,8 +380,69 @@ router.delete('/deleteadmin/:id', function (req, res) {
         }
       });
 });  
-  
-  
+
+
+//Connecting to merchants
+router.get('/merchants', function (req, res) {
+    // console.log(req.get('Content-Type')); 
+    // res.send("Hello World!! Welcome Users!!");
+    // userModel.find({}).then(function (users) {
+    //     res.send(users);
+    //     });
+    axios.get(merchantsservice+'/merchants').then((response) => {
+        res.send(response.data);
+    });
+});
+
+
+router.post('/addmerchant', function (req, res) {
+    // console.log(req.get('Content-Type')); 
+    // res.send("Hello World!! Welcome to update an admin!!");
+    axios.post(merchantsservice+'/addmerchant', req.body).then((response) => {
+        res.send(response.data);
+    
+});
+});
+
+
+
+
+
+router.get('/dealsorcoupons', function (req, res) {
+    // console.log(req.get('Content-Type')); 
+    // res.send("Hello World!! Welcome Users!!");
+    // userModel.find({}).then(function (users) {
+    //     res.send(users);
+    //     });
+    axios.get(dncservice+'/dealsorcoupons').then((response) => {
+        res.send(response.data);
+    });
+});
+
+
+router.get('/deal', function (req, res) {
+    // console.log(req.get('Content-Type')); 
+    // res.send("Hello World!! Welcome Users!!");
+    // userModel.find({}).then(function (users) {
+    //     res.send(users);
+    //     });
+    axios.get(dncservice+'/deal').then((response) => {
+        res.send(response.data);
+    });
+});
+
+
+router.get('/code', function (req, res) {
+    // console.log(req.get('Content-Type')); 
+    // res.send("Hello World!! Welcome Users!!");
+    // userModel.find({}).then(function (users) {
+    //     res.send(users);
+    //     });
+    axios.get(dncservice+'/code').then((response) => {
+        res.send(response.data);
+    });
+});
+
 // app.listen(PORT, function(err){
 //     if (err) console.log(err);
 //     console.log("Server listening on PORT", PORT);

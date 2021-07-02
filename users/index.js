@@ -8,6 +8,12 @@ const usersRightsRouter = require('./routes/users-routes');
 var bodyParser = require('body-parser');
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
+var cors = require('cors');
+var  corsOptions  = {
+  origin: 'http://localhost:8000', //frontend url
+  credentials: true,
+  exposedHeaders: ["set-cookie"]}
+app.use(cors(corsOptions));
 
 // Extended: https://swagger.io/specification/#infoObject
 const swaggerOptions = {

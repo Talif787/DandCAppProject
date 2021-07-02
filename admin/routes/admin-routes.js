@@ -21,6 +21,8 @@ const merchantsservice = 'http://localhost:3008/merchantrights';
 const dncservice = 'http://localhost:3004/dealsorcouponsrights'; 
 const express = require('express')
 const router = express.Router();
+const verify = require('../middleware/verify');
+const maxAge = 3 * 24 * 60 * 60;
 
 /**
  * @openapi
@@ -97,16 +99,162 @@ router.get('/admins', function (req, res) {
     
 });
 
-
-router.get('/users', function (req, res) {
+router.post('/api/posts', verify, (req, res) => { 
+    //   console.log("Hello");
+    // verifyToken;
+    //   // Verify Token
+    // function verifyToken(req, res, next) {
+    //     // Get auth header value
+    //     const bearerHeader = req.headers['authorization'];
+    //     // Check if bearer is undefined
+    //     if(typeof bearerHeader !== 'undefined') {
+    //       // Split at the space
+    //       const bearer = bearerHeader.split(' ');
+    //       // Get token from array
+    //       const bearerToken = bearer[1];
+    //       // Set the token
+    //       req.token = bearerToken;
+    //       // Next middleware
+    //       next();
+    //     } else {
+    //       // Forbidden
+    //       res.send("Killed");
+    //     }
+    //   }
+      jwt.verify(req.token, 'secretkey', (err, authData) => {
+        if(err) {
+          res.sendStatus(403);
+        } else {
+          res.json({
+            message: 'Post created...',
+            authData
+          });
+        }
+      });
+      // res.send("hello world");
+    });
+    
+    
+    
+     
+       
+    // //   // Verify Token
+    // function verifyToken(req, res, next) {
+    //   console.log("Hello");
+    //     // Get auth header value
+    //     const bearerHeader = req.headers['authorization'];
+    //     // Check if bearer is undefined
+    //     if(typeof bearerHeader !== 'undefined') {
+    //       // Split at the space
+    //       const bearer = bearerHeader.split(' ');
+    //       // Get token from array
+    //       const bearerToken = bearer[1];
+    //       // Set the token
+    //       req.token = bearerToken;
+    //       // Next middleware
+    //       next();
+    //     } else {
+    //       // Forbidden
+    //       res.sendStatus(403);
+    //     }
+    //   }
+    router.post('/adminsignup', function(req, res) {
+       //  bcrypt.hash(req.body.password, 10, function(err, hash){
+       //     if(err) {
+       //        return res.status(500).json({
+       //           error: err
+       //        });
+       //     }
+       //     else {
+            //   var mailer = require('../../Mail/server');
+            //   mailer(req.body.email_address);
+              const admin = new adminModel({
+                 full_name: req.body.full_name,
+                 email_address: req.body.email_address,
+                 password: req.body.password,
+                 mobile_number: req.body.mobile_number      
+              });
+             console.log(admin)
+              admin.save(function(err, created){
+                if(err){
+                    console.log("Hi");
+                    return res.status(500).json({success: false, error: err});
+                }
+                else{
+                    res.status(201).json({success:"Registration Successful..Please login to continue..", data: created})
+                }
+            });
+     });
+    
+    
+     router.post('/adminsignin', function(req, res){
+    
+        adminModel.findOne({email_address: req.body.email_address})
+        .exec()
+        .then(function(user) {
+           bcrypt.compare(req.body.password, user.password, function(err, result){
+              if(err) {
+                 return res.status(401).json({
+                    failed: 'Unauthorized Access'
+                 });
+              }
+              if(result) {
+                const JWTToken = jwt.sign({
+                email_address: user.email_address,
+              },
+              'secretkey',
+               {
+                 expiresIn: maxAge
+               });
+              //  app.use(function(req, res, next) {
+                // res.setheader('Access-Control-Allow-Credentials', true);
+                // res.setheader('Access-Control-Allow-Origin', req.headers.origin);
+                // res.setheader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
+                // res.setheader('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+                // next();
+              // });
+               res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8000/signin');
+               res.setHeader('Access-Control-Allow-Credentials',true);
+               res.cookie('jwt', JWTToken, {httpOnly: true, maxAge: maxAge * 1000})
+               return res.status(200).json({
+                 success: 'Admin login successful..',
+                 token: JWTToken
+               });
+              }
+              return res.status(401).json({
+              failed: 'The Password is incorrect.'
+             });
+           });
+        })
+        .catch(error => {
+           res.status(500).json({
+              failed: "This Email does not exist."
+           });
+        });
+     });
+    
+    
+router.get('/adminlogout', function(req, res) {
+      // res.cookie('jwt', '', { maxAge: 1 }).send("Logged out successfully..")
+      res.send("Logged out successfully..")
+});
+router.get('/adminusers', verify, function (req, res) {
     // console.log(req.get('Content-Type')); 
     // res.send("Hello World!! Welcome Users!!");
     // userModel.find({}).then(function (users) {
     //     res.send(users);
     //     });
-    axios.get(usersservice+'/users').then((response) => {
-        res.send(response.data);
-    });
+    jwt.verify(req.token, 'secretkey', (err, authData) => {
+        if(err) {
+            console.log(req.token);
+          res.sendStatus(403);
+        } else {
+            axios.get(usersservice+'/users').then((response) => {
+                res.send(response.data);
+            });
+        }
+      });
+   
 });
 
 router.get('/user/:id', function (req, res) {

@@ -6,8 +6,17 @@ const router = express.Router();
 // var router = express.Router();
 const userModel = require('../models/user-models');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
+const maxAge = 3 * 24 * 60 * 60;
+var cors = require('cors');
+var  corsOptions  = {
+  origin: 'http://localhost:8000', //frontend url
+  credentials: true,
+  exposedHeaders: ["set-cookie"]}
+app.use(cors(corsOptions));
+var verify = require('../middleware/verify');
 
 
 // var bodyParser = require('body-parser');
@@ -80,9 +89,16 @@ const mongoose = require('mongoose');
 router.get('/users', function (req, res) {
     // console.log(req.get('Content-Type'));        //http://localhost:3000/userrights/users
     // res.send("Hello World!! Welcome Users!!");
-    userModel.find({}).then(function (users) {
-        res.send(users);
-        });
+    // jwt.verify(req.token, 'secretkey', (err, authData) => {
+    //   if(err) {
+    //     res.sendStatus(403);
+    //   } else {
+        userModel.find({}).then(function (users) {
+          res.send(users);
+          });;
+    //   }
+    // });
+    
 });
 
 
@@ -186,7 +202,7 @@ const authenticateJWT = (req, res, next) => {
   }
 };
 
-router.post('/api/posts', verifyToken, (req, res) => { 
+router.post('/api/posts', verify, (req, res) => { 
 //   console.log("Hello");
 // verifyToken;
 //   // Verify Token
@@ -225,25 +241,26 @@ router.post('/api/posts', verifyToken, (req, res) => {
 
  
    
-//   // Verify Token
-function verifyToken(req, res, next) {
-    // Get auth header value
-    const bearerHeader = req.headers['authorization'];
-    // Check if bearer is undefined
-    if(typeof bearerHeader !== 'undefined') {
-      // Split at the space
-      const bearer = bearerHeader.split(' ');
-      // Get token from array
-      const bearerToken = bearer[1];
-      // Set the token
-      req.token = bearerToken;
-      // Next middleware
-      next();
-    } else {
-      // Forbidden
-      res.sendStatus(403);
-    }
-  }
+// //   // Verify Token
+// function verifyToken(req, res, next) {
+//   console.log("Hello");
+//     // Get auth header value
+//     const bearerHeader = req.headers['authorization'];
+//     // Check if bearer is undefined
+//     if(typeof bearerHeader !== 'undefined') {
+//       // Split at the space
+//       const bearer = bearerHeader.split(' ');
+//       // Get token from array
+//       const bearerToken = bearer[1];
+//       // Set the token
+//       req.token = bearerToken;
+//       // Next middleware
+//       next();
+//     } else {
+//       // Forbidden
+//       res.sendStatus(403);
+//     }
+//   }
 router.post('/signup', function(req, res) {
    //  bcrypt.hash(req.body.password, 10, function(err, hash){
    //     if(err) {
@@ -265,7 +282,7 @@ router.post('/signup', function(req, res) {
                 return res.status(500).json({success: false, error: err});
             }
             else{
-                res.status(201).json({success:"New user has been created.", data: created})
+                res.status(201).json({success:"Registration Successful..Please login to continue..", data: created})
             }
         });
  });
@@ -288,10 +305,20 @@ router.post('/signup', function(req, res) {
           },
           'secretkey',
            {
-             expiresIn: '2h'
+             expiresIn: maxAge
            });
+          //  app.use(function(req, res, next) {
+            // res.setheader('Access-Control-Allow-Credentials', true);
+            // res.setheader('Access-Control-Allow-Origin', req.headers.origin);
+            // res.setheader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
+            // res.setheader('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+            // next();
+          // });
+           res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8000/signin');
+           res.setHeader('Access-Control-Allow-Credentials',true);
+           res.cookie('jwt', JWTToken, {httpOnly: true, maxAge: maxAge * 1000})
            return res.status(200).json({
-             success: 'Welcome to the JWT Auth',
+             success: 'Login Successful..',
              token: JWTToken
            });
           }
@@ -302,12 +329,34 @@ router.post('/signup', function(req, res) {
     })
     .catch(error => {
        res.status(500).json({
-          failed: "This Email-ID does not exist."
+          failed: "This Email does not exist."
        });
     });
  });
 
 
+ router.get('/logout', function(req, res) {
+  // res.cookie('jwt', '', { maxAge: 1 }).send("Logged out successfully..")
+  res.send("Logged out successfully..")
+});
+
+
+  // function isLoggedIn(req, res, next) {
+  //   if (req.isAuthenticated()) {
+  //     next();
+  //   } else {
+  //     res.send("You're not logged in..");
+  //   }
+  // };
+  
+  // function isNotLoggedIn(req, res, next)  {
+  //   console.log("isnot");
+  //   if (!req.isAuthenticated()) {
+  //     next();
+  //   } else {
+  //     res.send("You are already logged in..");
+  //   }
+  // };
 /**
  * @openapi
  * /userrights/updateuser/{id}:
